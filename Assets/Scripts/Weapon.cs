@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Weapon
 {
+    public int WeaponRange { get; private set; }
     public int WeaponAttack {  get; private set; }
     public int WeaponSkill {  get; private set; }
     public int WeaponDamage {  get; private set; }
@@ -17,6 +18,11 @@ public class Weapon
         public Builder()
         {
             weapon = new Weapon();
+        }
+        public Builder WithRange(int range)
+        {
+            weapon.WeaponRange = range;
+            return this;
         }
         public Builder WithAttack(int attack)
         {
@@ -48,9 +54,4 @@ public class Weapon
             return weapon;
         }
     }
-}
-
-public interface ISpecialRule
-{
-
 }
