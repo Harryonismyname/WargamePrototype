@@ -11,7 +11,6 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Update()
     {
-        if(TurnManager.StateMachine.State != TurnState.Declaration) return;
         if (Input.GetMouseButtonDown(0) && Utilities.ScreenToWorldPoint(out Vector3 point, targetMask))
         {
             OnClick?.Invoke(point);

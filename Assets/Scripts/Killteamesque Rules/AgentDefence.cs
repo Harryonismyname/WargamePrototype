@@ -13,10 +13,10 @@ public class AgentDefence : MonoBehaviour
             if (result < Agent.Save) continue;
             if (result == 6)
             {
-                context.RetainedCriticalDefence.Add(result);
+                context.RetainedCriticalDefense.Add(result);
                 continue;
             }
-            context.RetainedDefence.Add(result);
+            context.RetainedDefense.Add(result);
         }
         return context;
     }

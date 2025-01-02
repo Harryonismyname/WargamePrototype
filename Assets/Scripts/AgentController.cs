@@ -1,42 +1,47 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(NavMeshAgent))]
-public class AgentController : MonoBehaviour
+public class AgentController
 {
-    [SerializeField] float sampleDistance = 0.5f;
-    NavMeshAgent agent;
-    bool debug;
-    NavMeshPath path;
+    public LayerMask WalkableLayer { get; private set; }
+    public int Range {  get; private set; }
+    public NavMeshPath Path { get; private set; }
+    readonly NavMeshAgent agent;
+    readonly float sampleDistance = 10f;
 
-    private void Awake()
+    public AgentController(NavMeshAgent agent, int range, LayerMask walkableLayer)
     {
-        agent = GetComponent<NavMeshAgent>();
+        this.agent = agent;
+        Range = range;
+        WalkableLayer = walkableLayer;
+        Path = new NavMeshPath();
     }
-    public bool TrySetDestination(Vector3 destination)
+    public Vector3 CalculatePath(Vector3 point)
     {
-        if (NavMesh.SamplePosition(destination, out NavMeshHit hit, sampleDistance, agent.areaMask))
+        if (!agent.CalculatePath(point, Path))
         {
-            agent.SetDestination(hit.position);
-            return true;
+            Debug.LogWarning("Path Not calculated");
+            return agent.transform.position;
         }
-        return false;
-    }
-    public void Debug()
-    {
-        debug = true;
-    }
-    public void StopDebug()
-    {
-        debug = false;
-    }
+        float distTraveled = Vector3.Distance(Path.corners[0], agent.transform.position);
+        float dist = Vector3.Distance(Path.corners[0], agent.transform.position);
+        for (int i = 0; i < Path.corners.Length; i++)
+        {
+            var dest = Path.corners[i];
 
-    private void OnDrawGizmos()
-    {
-        if (debug)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(transform.position + (transform.up * agent.height), agent.radius * 1.5f);
+            if (i > 0)
+            {
+                dist = Vector3.Distance(dest, Path.corners[i - 1]);
+                distTraveled += dist;
+            }
+            if (distTraveled >= Range)
+            {
+                var ray = new Ray(Path.corners[i - 1], (dest - Path.corners[i - 1]).normalized).GetPoint(dist - (distTraveled - Range));
+                agent.CalculatePath(ray, Path);
+                break;
+            }
         }
+        return Path.corners[^1];
     }
+    public bool TrySetDestination(Vector3 destination) => NavMesh.SamplePosition(destination, out NavMeshHit hit, sampleDistance, agent.areaMask) && agent.SetDestination(hit.position);
 }

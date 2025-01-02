@@ -113,6 +113,7 @@ namespace PolearmStudios.Utils
 
         public static List<int> QuickSort(List<int> list, bool ascending = true)
         {
+            if (list.Count < 2) return list;
             return SortList(list, 0, list.Count - 1, ascending);
         }
 

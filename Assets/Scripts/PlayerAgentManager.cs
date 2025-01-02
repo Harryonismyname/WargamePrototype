@@ -1,24 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PolearmStudios.SelectionSystem;
 
 public class PlayerAgentManager : MonoBehaviour
 {
     [SerializeField] bool debug;
-    [SerializeField] Agent[] availableAgents;
+    [SerializeField] LayerMask AgentLayer;
+    [SerializeField] List<Agent> availableAgents;
     public Agent ActiveAgent { get; private set; }
 
     IAction currentAction;
     
     int index = 0;
+    int sampleDistance = 2;
+
+    public string CurrentActionName;
+    Collider[] selectionColls = new Collider[1];
 
     private void Awake()
     {
-        PlayerInputHandler.OnClick += AttemptAction;
+        PlayerInputHandler.OnClick += HandleClick;
+        TurnManager.StateMachine.OnStateChanged += HandleState;
+        Selector.OnSelectionUpdated += ValidateSelection;
     }
+
     private void OnDestroy()
     {
-        PlayerInputHandler.OnClick -= AttemptAction;
+        PlayerInputHandler.OnClick -= HandleClick;
+        TurnManager.StateMachine.OnStateChanged -= HandleState;
+        Selector.OnSelectionUpdated -= ValidateSelection;
     }
 
     private void Start()
@@ -37,12 +48,73 @@ public class PlayerAgentManager : MonoBehaviour
         }
     }
 
+    private void HandleState(TurnState obj)
+    {
+        switch (obj)
+        {
+            case TurnState.Selection:
+                break;
+            case TurnState.Declaration:
+                break;
+            case TurnState.Reaction:
+                break;
+            case TurnState.Resolution:
+                break;
+            case TurnState.None:
+                break;
+            default:
+                break;
+        }
+    }
+
     public void SelectAction(IAction newAction)
     {
         currentAction = newAction;
+        CurrentActionName = currentAction.Name;
     }
 
-    void AttemptAction(Vector3 point)
+    public void SelectAction(int index)
+    {
+        Debug.Log("Attempting to select action of index: " + index + "...");
+        if (index >= ActiveAgent.Actions.Count)
+        {
+            Debug.LogError("Attempt Failed!");
+            return;
+        }
+        currentAction = ActiveAgent.Actions[index];
+        CurrentActionName = currentAction.Name;
+    }
+
+    private void HandleClick(Vector3 point)
+    {
+        switch (TurnManager.StateMachine.State)
+        {
+            case TurnState.Selection:
+                break;
+            case TurnState.Declaration:
+                AttemptAction(point);
+                break;
+            case TurnState.Reaction:
+                break;
+            case TurnState.Resolution:
+                break;
+            case TurnState.None:
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void ValidateSelection(ISelectable obj)
+    {
+        if (!obj.GameObject.TryGetComponent(out Agent newAgent)) return;
+        if (!availableAgents.Contains(newAgent)) return;
+
+        index = availableAgents.IndexOf(newAgent);
+        ActiveAgent = newAgent;
+    }
+
+    private void AttemptAction(Vector3 point)
     {
         if (TurnManager.StateMachine.State != TurnState.Declaration)
         {
@@ -86,7 +158,7 @@ public class PlayerAgentManager : MonoBehaviour
             return;
         }
         index++;
-        if (index >= availableAgents.Length) index = 0;
+        if (index >= availableAgents.Count) index = 0;
         ActiveAgent = availableAgents[index];
     }
 }

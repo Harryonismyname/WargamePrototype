@@ -1,29 +1,45 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class Agent: MonoBehaviour
+[RequireComponent(typeof(NavMeshAgent))]
+public class Agent : MonoBehaviour, IDamagable, ISelectable
 {
     public string Name;
-    [SerializeField] int APL = 2;
-    public int Defence { get; private set; }
-    public int Save {  get; private set; }
-    public int AP { get; private set; }
-    [SerializeField] AgentController controller;
+    [SerializeField] LayerMask walkableLayer;
+    [SerializeField] LayerMask targetLayer;
     [SerializeField] Actions[] availableActions;
+    [SerializeField] DatasheetTemplate datasheetTemplate;
+    [SerializeField] WeaponTemplate weaponTemplate;
+    private Datasheet datasheet;
+    public  Weapon HeldWeapons;
+    public int Wounds => datasheet.Wounds;
+    public int Defence { get => datasheet.Defence; }
+    public int Save { get => datasheet.Save; }
+    public int AP { get => datasheet.AP; }
+    public int Movement { get => datasheet.Movement; }
     public List<IAction> Actions { get; private set; }
+    public AgentController Controller { get; private set; }
+    public bool Activated { get; set; }
+    public bool IsDead => datasheet.Wounds > 0;
+
+    public GameObject GameObject => gameObject;
 
     private void Awake()
     {
-        controller = GetComponent<AgentController>();
+        datasheet = datasheetTemplate.GenerateData();
+        HeldWeapons = weaponTemplate.GenerateData();
+        Controller = new(GetComponent<NavMeshAgent>(), Movement, walkableLayer);
         Actions = new();
         foreach (var action in availableActions)
         {
             switch (action)
             {
                 case global::Actions.Move:
-                    Actions.Add(new MoveAction(controller));
+                    Actions.Add(new MoveAction(Controller));
                     break;
                 case global::Actions.Attack:
+                    Actions.Add(new ShootAction(HeldWeapons, targetLayer));
                     break;
                 case global::Actions.Idle:
                     break;
@@ -34,13 +50,32 @@ public class Agent: MonoBehaviour
             }
         }
     }
-    public void ConsumeAP(int amount)
+    public void ConsumeAP(int amount) => datasheet.ConsumeAP(amount);
+    public void GenerateAP() => datasheet.ResetAP();
+    public void DealDamage(int amount)
     {
-        AP = Mathf.Clamp(AP - amount, 0, APL);
+        if (IsDead) return;
+
+        ObjectPool.
+            Instance
+            .SpawnFromPool(
+            "textPopup",
+            transform.position,
+            Quaternion.identity
+            )
+            .GetComponent<TextPopup>()
+            .SetText(amount.ToString());
+        datasheet.Wounds -= amount;
     }
-    public void GenerateAP()
+
+    public void OnSelect()
     {
-        AP = APL;
+        throw new System.NotImplementedException();
+    }
+
+    public void OnDeselect()
+    {
+        throw new System.NotImplementedException();
     }
 }
 
