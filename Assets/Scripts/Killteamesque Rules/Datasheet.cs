@@ -22,7 +22,7 @@ public class Datasheet
     public class Builder
     {
         private readonly Datasheet sheet = new();
-        public Builder SetDefence(int amount)
+        public Builder SetDefense(int amount)
         {
             sheet.Defence = amount;
             return this;

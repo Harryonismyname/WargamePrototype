@@ -25,7 +25,13 @@ public class CombatContext
         RetainedDefense = Utilities.QuickSort(RetainedDefense);
         RetainedCriticalHits = Utilities.QuickSort(RetainedCriticalHits);
         RetainedCriticalDefense = Utilities.QuickSort(RetainedCriticalDefense);
-        if ((RetainedHits.Count < 1 && RetainedCriticalHits.Count < 1) || (RetainedDefense.Count < 1 && RetainedCriticalDefense.Count < 1)) return;
+        if (RetainedHits.Count < 1 && RetainedCriticalHits.Count < 1) return;
+        if (RetainedDefense.Count < 1 && RetainedCriticalDefense.Count < 1)
+        {
+            SuccessfulHits = RetainedHits;
+            SuccessfulCrits= RetainedCriticalHits;
+            return;
+        }
         // Copy block lists to track remaining unused blocks
         var remainingCriticalBlocks = RetainedCriticalDefense.ToList();
         var remainingNormalBlocks = RetainedDefense.ToList();

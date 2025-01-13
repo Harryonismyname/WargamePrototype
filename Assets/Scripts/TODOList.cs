@@ -22,22 +22,3 @@
 // TODO: Create a testing script to help troubleshoot the game flow
 // TODO: Block out interaction systems into their own system independent of the gameflow
 // TODO: Design these systems before building them
-
-/*
- Selection System: MonoBehaviour
-{
-    public ISelectable SelectedObject;
-
-    private void Update()
-    {
-        screencast the world trying to get an ISelectable
-    }
-}
-
-ISelectable
-{
-    T GetData<T>();
-}
-
-
- */

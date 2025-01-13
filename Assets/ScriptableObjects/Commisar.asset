@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e02b42ffe0d386f4ab4d44d8e00a558a, type: 3}
   m_Name: Commisar
   m_EditorClassIdentifier: 
-  Defence: 3
+  Wounds: 10
+  Defense: 4
   Save: 5
   AP: 2
   Movement: 20

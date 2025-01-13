@@ -21,7 +21,7 @@ public class Agent : MonoBehaviour, IDamagable, ISelectable
     public List<IAction> Actions { get; private set; }
     public AgentController Controller { get; private set; }
     public bool Activated { get; set; }
-    public bool IsDead => datasheet.Wounds > 0;
+    public bool IsDead => datasheet.Wounds <= 0;
 
     public GameObject GameObject => gameObject;
 
@@ -66,16 +66,15 @@ public class Agent : MonoBehaviour, IDamagable, ISelectable
             .GetComponent<TextPopup>()
             .SetText(amount.ToString());
         datasheet.Wounds -= amount;
+        if(IsDead) gameObject.SetActive(false);
     }
 
     public void OnSelect()
     {
-        throw new System.NotImplementedException();
     }
 
     public void OnDeselect()
     {
-        throw new System.NotImplementedException();
     }
 }
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using PolearmStudios.Utils;
+using System;
 public class ShootAction : IAction
 {
     public string Name { get => "Shoot"; }
@@ -13,9 +14,12 @@ public class ShootAction : IAction
     private Transform agent;
     private Agent target;
 
+    public StateMachine<ActionState> StateMachine { get; private set; }
+
     private bool CheckForTarget()
     {
         if (!CheckClick()) return false;
+        agent = targetCollider[0].transform;
         var localTargets = Physics.OverlapSphere(agent.position, weapon.WeaponRange, layerMask);
         return true;
     }
@@ -29,10 +33,11 @@ public class ShootAction : IAction
     }
     private CombatContext RollForAttack(CombatContext context)
     {
+        Debug.Log("Rolling Attack Dice...");
         int result;
         for (int i = 0; i < weapon.WeaponAttack; i++)
         {
-            result = Random.Range(1, 6);
+            result = DiceBox.RollD6();
             if (result < weapon.WeaponSkill) continue;
             if (result == 6)
             {
@@ -41,14 +46,16 @@ public class ShootAction : IAction
             }
             context.RetainedHits.Add(result);
         }
+        Debug.Log($"Retained {context.RetainedHits.Count + context.RetainedCriticalHits.Count} Hits!");
         return context;
     }
     private CombatContext RollForDefense(CombatContext context)
     {
+        Debug.Log("Rolling Defense Dice...");
         int result;
         for (int i = 0; i < target.Defence; i++)
         {
-            result = Random.Range(1, 6);
+            result = DiceBox.RollD6();
             if (result < target.Save) continue;
             if (result == 6)
             {
@@ -57,6 +64,7 @@ public class ShootAction : IAction
             }
             context.RetainedDefense.Add(result);
         }
+        Debug.Log($"Retained {context.RetainedDefense.Count + context.RetainedCriticalDefense.Count} Blocks!");
         return context;
     }
 
@@ -64,16 +72,22 @@ public class ShootAction : IAction
     {
         weapon = _weapon;
         layerMask = _targetMask;
+        StateMachine = new();
     }
 
     public bool Declare(Vector3 point)
     {
-        if (!CheckForTarget()) return false;
+        if (!CheckForTarget())
+        {
+            StateMachine.ChangeState(ActionState.Canceled);
+            return false;
+        }
         return Perform(point);
     }
 
     public bool Perform(Vector3 point)
     {
+        Debug.Log("Performing Shoot Action...");
         CombatContext context = new(weapon, target);
         context = RollForDefense(RollForAttack(context));
         context.DetermineSuccessfulHits();
@@ -88,6 +102,20 @@ public class ShootAction : IAction
             target.DealDamage(weapon.WeaponDamage * 2);
             totalDamage += weapon.WeaponDamage;
         }
+        Debug.Log($"Dealing {totalDamage} total damage!");
+        return true;
+    }
+
+    private bool Complete()
+    {
+        StateMachine.ChangeState(ActionState.Complete);
+        // wrap up any additional things before completion
+        return true;
+    }
+    public bool Cancel()
+    {
+        StateMachine.ChangeState(ActionState.Canceling);
+        // do stuff to cancel this action...
         return true;
     }
 }

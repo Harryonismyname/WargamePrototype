@@ -13444,8 +13444,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2054662532}
-        m_TargetAssemblyTypeName: PlayerAgentManager, Assembly-CSharp
+      - m_Target: {fileID: 2054662534}
+        m_TargetAssemblyTypeName: ActionManager, Assembly-CSharp
         m_MethodName: SelectAction
         m_Mode: 3
         m_Arguments:
@@ -14328,8 +14328,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2054662532}
-        m_TargetAssemblyTypeName: PlayerAgentManager, Assembly-CSharp
+      - m_Target: {fileID: 2054662534}
+        m_TargetAssemblyTypeName: ActionManager, Assembly-CSharp
         m_MethodName: SelectAction
         m_Mode: 3
         m_Arguments:
@@ -15341,6 +15341,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2054662533}
   - component: {fileID: 2054662532}
+  - component: {fileID: 2054662534}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -15360,7 +15361,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ba6ab88b6c86cf42acfe5f0e37bfeab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debug: 1
   AgentLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -15369,7 +15369,6 @@ MonoBehaviour:
   - {fileID: 2076077472}
   - {fileID: 1651861304}
   - {fileID: 1793627608}
-  CurrentActionName: 
 --- !u!4 &2054662533
 Transform:
   m_ObjectHideFlags: 0
@@ -15385,6 +15384,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2054662534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2054662531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fce90dee1d9f2ca41b52d70feb898a57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentActionName: 
 --- !u!1 &2063307296
 GameObject:
   m_ObjectHideFlags: 0
@@ -15655,6 +15667,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2128783303}
   - component: {fileID: 2128783302}
+  - component: {fileID: 2128783304}
   m_Layer: 0
   m_Name: PlayerInputHandler
   m_TagString: Untagged
@@ -15692,6 +15705,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2128783304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2128783301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7428a212361d1834c97ab6917f4701cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SelectableLayers:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

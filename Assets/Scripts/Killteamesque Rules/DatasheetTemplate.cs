@@ -4,7 +4,7 @@
 public class DatasheetTemplate : ScriptableObject
 {
     [SerializeField] int Wounds;
-    [SerializeField] int Defence;
+    [SerializeField] int Defense;
     [SerializeField] int Save;
     [SerializeField] int AP;
     [SerializeField] int Movement;
@@ -12,7 +12,7 @@ public class DatasheetTemplate : ScriptableObject
     {
         return new Datasheet.Builder()
             .SetWounds(Wounds)
-            .SetDefence(Defence)
+            .SetDefense(Defense)
             .SetSave(Save)
             .SetAP(0)
             .SetAPL(AP)
