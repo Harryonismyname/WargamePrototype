@@ -7,10 +7,12 @@ using UnityEngine;
 public class TextPopup : MonoBehaviour, IPooledObject
 {
     [SerializeField] float lifespan = 5;
+    [SerializeField] float fadeSpeed = 1.5f;
     TextMeshPro _textMeshPro;
     Timer _timer;
     Vector3 cameraDir;
     bool isSpawned;
+    float delta;
 
     private void Awake()
     {
@@ -51,11 +53,14 @@ public class TextPopup : MonoBehaviour, IPooledObject
     private void Update()
     {
         if (!isSpawned) return;
-        _timer.Update(Time.deltaTime);
-        _textMeshPro.alpha = _timer.TimeElapsed / (_timer.Duration - (lifespan * .9f));
+
+        delta = (_timer.Duration - (_timer.TimeElapsed * fadeSpeed)) / _timer.Duration;
+        _textMeshPro.alpha = delta;
         cameraDir = (Camera.main.transform.position - transform.position).normalized;
         transform.position += cameraDir * Time.deltaTime;
         transform.forward = cameraDir;
+        transform.up = Camera.main.transform.up;
+        _timer.Update(Time.deltaTime);
     }
 }
 

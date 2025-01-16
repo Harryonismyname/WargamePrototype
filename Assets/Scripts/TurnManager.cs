@@ -16,7 +16,7 @@ public class TurnManager : MonoBehaviour
         Instance = new(this);
     }
 
-    public void UpdateState(TurnState newState) => StateMachine.ChangeState(newState);
+    public static void UpdateState(TurnState newState) => StateMachine.ChangeState(newState);
 
 }
 

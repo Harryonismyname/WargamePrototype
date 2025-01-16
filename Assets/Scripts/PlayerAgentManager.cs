@@ -75,7 +75,7 @@ public class PlayerAgentManager : MonoBehaviour
     {
         OnAgentSelected?.Invoke(ActiveAgent);
         ActiveAgent.GenerateAP();
-        TurnManager.StateMachine.ChangeState(TurnState.Declaration);
+        TurnManager.UpdateState(TurnState.Declaration);
     }
 
     private void CycleActiveAgent()
